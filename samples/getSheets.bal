@@ -15,22 +15,22 @@
 // under the License.
 
 import ballerinax/googleapis_sheets as sheets;
-import ballerina/config;
 import ballerina/log;
 
-sheets:SpreadsheetConfiguration config = {
-    oauth2Config: {
-        accessToken: "<Access token here>",
-        refreshConfig: {
-            clientId: config:getAsString("CLIENT_ID"),
-            clientSecret: config:getAsString("CLIENT_SECRET"),
-            refreshUrl: config:getAsString("REFRESH_URL"),
-            refreshToken: config:getAsString("REFRESH_TOKEN")
-        }
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+
+sheets:SpreadsheetConfiguration spreadsheetConfig = {
+    oauthClientConfig: {
+        clientId: clientId,
+        clientSecret: clientSecret,
+        refreshUrl: sheets:REFRESH_URL,
+        refreshToken: refreshToken
     }
 };
 
-sheets:Client spreadsheetClient = new (config);
+sheets:Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 
 public function main() {
     string spreadsheetId = "";
@@ -54,14 +54,13 @@ public function main() {
         log:printError("Error: " + sheet.toString());
     }
 
-    // Get All Worksheets in the Spreadsheet with the given Spreadsheet ID 
-    sheets:Sheet[]|error spreadsheetRes = spreadsheetClient->getSheets(spreadsheetId);
-    if (spreadsheetRes is sheets:Sheet[]) {
-        error? e = spreadsheetRes.forEach(function (sheets:Sheet worksheet) {
-            log:print("Worksheet Name: " + worksheet.properties.title.toString() + " | Worksheet ID: " 
-                + worksheet.properties.sheetId.toString());
-        }); 
+    sheets:Sheet[]|error sheetsRes = spreadsheetClient->getSheets(spreadsheetId);
+    if (sheetsRes is sheets:Sheet[]) {
+        error? e = sheetsRes.forEach(function (sheets:Sheet worksheet) {
+        log:print("Worksheet Name: " + worksheet.properties.title.toString() + " | Worksheet ID: " 
+            + worksheet.properties.sheetId.toString());
+    }); 
     } else {
-        log:printError("Error: " + response.toString());
+        log:printError("Error: " + sheetsRes.toString());
     }
 }
