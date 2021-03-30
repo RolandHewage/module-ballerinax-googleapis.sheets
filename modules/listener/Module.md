@@ -10,7 +10,7 @@ The Google Spreadsheet Listener Ballerina Module provides the capability to list
 
 | Ballerina Language Versions  | GSheet API Version |
 |:----------------------------:|:------------------:|
-|  Swan Lake Alpha 2           |   v4               |
+|  Swan Lake Alpha 3           |   v4               |
 
 
 # Supported Trigger Operations
@@ -61,7 +61,7 @@ We can get more information about the edit event such as the
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Lake Alpha 2 is required.
+Ballerina Swan Lake Alpha 3 is required.
 
 * Instantiate the Google Drive connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for Bearer Token Authentication and OAuth 2.0. Google Drive uses OAuth 2.0 to authenticate and authorize requests. It uses the Direct Token Grant Type. The Google Drive connector can be minimally instantiated in the HTTP client config using the OAuth 2.0 access token.
     * Access Token 

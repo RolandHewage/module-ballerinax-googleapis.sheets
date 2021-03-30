@@ -107,7 +107,7 @@ trustStorePassword = "enter a truststore password if required"
 |                                   | Version               |
 |:---------------------------------:|:---------------------:|
 | Google Sheets API Version         | V4                    |
-| Ballerina Language                | Swan Lake Alpha 2     |
+| Ballerina Language                | Swan Lake Alpha 3     |
 | Java Development Kit (JDK)        | 11                    |
 
 ## Limitations
@@ -1852,7 +1852,7 @@ public function main() {
 
         > **Note:** Set the JAVA_HOME environment variable to the path name of the directory into which you installed JDK.
 
-2. Download and install [Ballerina SLP8](https://ballerina.io/). 
+2. Download and install [Ballerina](https://ballerina.io/). 
 
 ### Building the Source
 
