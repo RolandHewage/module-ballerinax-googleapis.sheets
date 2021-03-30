@@ -55,7 +55,7 @@ public class GoogleSheetEventListener {
         self.channelUuid = self.watchResponse?.id.toString();
         self.watchResourceId = self.watchResponse?.resourceId.toString();
         self.currentToken = self.watchResponse?.startPageToken.toString();
-        log:print("Watch channel started in Google, id : " + self.channelUuid);
+        log:printInfo("Watch channel started in Google, id : " + self.channelUuid);
     }
 
     public isolated function attach(http:Service s, string[]|string? name = ()) returns error? {
@@ -85,7 +85,7 @@ public class GoogleSheetEventListener {
     # + request - The HTTP request.
     # + return - Returns error, if unsuccessful.
     public function findEventType(http:Caller caller, http:Request request) returns error? {
-        log:print("<< RECEIVING A CALLBACK <<");
+        log:printInfo("<< RECEIVING A CALLBACK <<");
         string channelID = check request.getHeader("X-Goog-Channel-ID");
         string messageNumber = check request.getHeader("X-Goog-Message-Number");
         string resourceStates = check request.getHeader("X-Goog-Resource-State");
@@ -97,19 +97,19 @@ public class GoogleSheetEventListener {
             foreach drive:ChangesListResponse item in response {
                 self.currentToken = item?.newStartPageToken.toString();
                 if (self.isValidGsheet) {
-                    log:print("File watch response processing");
+                    log:printInfo("File watch response processing");
                     check mapFileUpdateEvents(self.specificGsheetId, item, self.driveClient, self.eventService, 
                         self.currentFileStatus);
                     check getCurrentStatusOfFile(self.driveClient, self.currentFileStatus, self.specificGsheetId);
                 } else {
-                    log:print("Whole drive watch response processing");
+                    log:printInfo("Whole drive watch response processing");
                     check mapEvents(item, self.driveClient, self.eventService, self.currentFileStatus);
                     check getCurrentStatusOfDrive(self.driveClient, self.currentFileStatus);
                 }
             }
             check caller->respond(http:STATUS_OK); 
         }
-        log:print("<< CALLBACK RECEIVED >>");
+        log:printInfo("<< CALLBACK RECEIVED >>");
     }
 
     # Finding the change event type triggered according to the incoming request.

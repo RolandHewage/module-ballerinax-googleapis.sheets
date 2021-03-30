@@ -75,7 +75,7 @@ string[][] entries = [
 function testCreateSpreadsheet() {
     var spreadsheetRes = spreadsheetClient->createSpreadsheet(createSpreadsheetName);
     if (spreadsheetRes is Spreadsheet) {
-        log:print(spreadsheetRes.toString());
+        log:printInfo(spreadsheetRes.toString());
         test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
         spreadsheetId =  <@untainted> spreadsheetRes.spreadsheetId;
     } else {
@@ -90,7 +90,7 @@ function testCreateSpreadsheet() {
 function testOpenSpreadsheetById() {
     var spreadsheetRes = spreadsheetClient->openSpreadsheetById(spreadsheetId);
     if (spreadsheetRes is Spreadsheet) {
-        log:print(spreadsheetRes.toString());
+        log:printInfo(spreadsheetRes.toString());
         test:assertEquals(spreadsheetRes.spreadsheetId, spreadsheetId, msg = "Failed to open the spreadsheet");
     } else {
         test:assertFail(spreadsheetRes.message());
@@ -98,14 +98,14 @@ function testOpenSpreadsheetById() {
 }
 
 @test:Config {
-    dependsOn: [ testCreateSpreadsheet ],
+    dependsOn: [ testOpenSpreadsheetById ],
     enable: true
 }
 function testOpenSpreadsheetByUrl() {
     string url = "https://docs.google.com/spreadsheets/d/" + spreadsheetId + "/edit#gid=0";
     var spreadsheetRes = spreadsheetClient->openSpreadsheetByUrl(url);
     if (spreadsheetRes is Spreadsheet) {
-        log:print(spreadsheetRes.toString());
+        log:printInfo(spreadsheetRes.toString());
         test:assertEquals(spreadsheetRes.spreadsheetId, spreadsheetId, msg = "Failed to open the spreadsheet");
     } else {
         test:assertFail(spreadsheetRes.message());
@@ -113,7 +113,7 @@ function testOpenSpreadsheetByUrl() {
 }
 
 @test:Config {
-    dependsOn: [ testCreateSpreadsheet ],
+    dependsOn: [ testOpenSpreadsheetByUrl ],
     enable: true
 }
 function testRenameSpreadsheet() {
@@ -132,11 +132,11 @@ function testRenameSpreadsheet() {
 }
 
 @test:Config { 
-    dependsOn: [ testCreateSpreadsheet ],
+    dependsOn: [ testRenameSpreadsheet ],
     enable: true
 }
 function testGetAllSpreadSheets() {
-    log:print("testGetAllSpreadSheets");    
+    log:printInfo("testGetAllSpreadSheets");    
     var response = spreadsheetClient->getAllSpreadsheets();
     if (response is stream<File>) {
         var file = response.next();
@@ -149,12 +149,13 @@ function testGetAllSpreadSheets() {
 // Sheet Management Operations
 
 @test:Config {
+    dependsOn: [ testGetAllSpreadSheets ],
     enable: true
 }
 function testAddSheet() {
     var spreadsheetRes = spreadsheetClient->addSheet(spreadsheetId, testSheetName);
     if (spreadsheetRes is Sheet) {
-        log:print(spreadsheetRes.toString());
+        log:printInfo(spreadsheetRes.toString());
         test:assertEquals(spreadsheetRes.properties.title, testSheetName, msg = "Failed to add a new sheet");
     } else {
         test:assertFail(spreadsheetRes.message());
@@ -162,13 +163,13 @@ function testAddSheet() {
 }
 
 @test:Config {
-    dependsOn: [ testCreateSpreadsheet, testAddSheet ],
+    dependsOn: [ testAddSheet ],
     enable: true
 }
 function testGetSheetByName() {
     var spreadsheetRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if (spreadsheetRes is Sheet) {
-        log:print(spreadsheetRes.toString());
+        log:printInfo(spreadsheetRes.toString());
         test:assertEquals(spreadsheetRes.properties.title, testSheetName, msg = "Failed to get the sheet by name");
     } else {
         test:assertFail(spreadsheetRes.message());
@@ -176,7 +177,7 @@ function testGetSheetByName() {
 }
 
 @test:Config {
-    dependsOn: [ testCreateSpreadsheet, testAddSheet ],
+    dependsOn: [ testGetSheetByName ],
     enable: true
 }
 function testRenameSheet() {
@@ -195,7 +196,7 @@ function testRenameSheet() {
 }
 
 @test:Config {
-    dependsOn: [ testCreateSpreadsheet, testAddSheet ],
+    dependsOn: [ testRenameSheet ],
     enable: true
 }
 function testRemoveSheet() {
@@ -212,7 +213,7 @@ function testRemoveSheet() {
 }
 
 @test:Config {
-    dependsOn: [ testCreateSpreadsheet, testAddSheet ],
+    dependsOn: [ testRemoveSheet ],
     enable: true
 }
 function testRemoveSheetByName() {
@@ -228,13 +229,13 @@ function testRemoveSheetByName() {
 }
 
 @test:Config {
-    dependsOn: [ testCreateSpreadsheet, testAddSheet ],
+    dependsOn: [ testRemoveSheetByName ],
     enable: true
 }
 function testGetSheets() {
     var spreadsheetRes = spreadsheetClient->getSheets(spreadsheetId);
     if (spreadsheetRes is Sheet[]) {
-        log:print(spreadsheetRes.toString());
+        log:printInfo(spreadsheetRes.toString());
         test:assertNotEquals(spreadsheetRes.length(), 0, msg = "Failed to retrieve the sheets");
     } else {
         test:assertFail(spreadsheetRes.message());
@@ -244,7 +245,7 @@ function testGetSheets() {
 // Sheet Service Operations
 
 @test:Config {
-    dependsOn: [ testAddSheet ],
+    dependsOn: [ testGetSheets ],
     enable: true
 }
 function testSetRange() {
@@ -254,29 +255,21 @@ function testSetRange() {
 }
 
 @test:Config {
-    dependsOn: [ testAddSheet ],
+    dependsOn: [ testSetRange ],
     enable: true
 }
 function testGetRange() {
     var spreadsheetRes = spreadsheetClient->getRange(spreadsheetId, testSheetName, "A1:D5");
-    string[][] getEntries = [
-        ["Name", "Score", "Performance", "Average"],
-        ["Keetz", "12"],
-        ["Niro", "78"],
-        ["Nisha", "98"]
-    ];
     if (spreadsheetRes is Range) {
-        log:print("testGetRange");
-        log:print(spreadsheetRes.toString());
-        log:print(getEntries.toString());
-        test:assertEquals(spreadsheetRes.values, getEntries, msg = "Failed to get the values of the range");
+        log:printInfo(spreadsheetRes.toString());
+        test:assertEquals(spreadsheetRes.values, entries, msg = "Failed to get the values of the range");
     } else {
         test:assertFail(spreadsheetRes.message());
     }
 }
 
 @test:Config {
-    dependsOn: [ testAddSheet, testSetRange ],
+    dependsOn: [ testGetRange ],
     enable: true
 }
 function testClearRange() {
@@ -292,13 +285,13 @@ function testClearRange() {
 }
 
 @test:Config {
-    dependsOn: [ testAddSheet, testSetRange ],
+    dependsOn: [ testClearRange ],
     enable: true
 }
 function testAddColumnsBefore() {
     var openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if (openRes is Sheet) {
-        log:print(openRes.toString());
+        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to add columns before the given index");
         int sheetId = openRes.properties.sheetId;
         var spreadsheetRes = spreadsheetClient->addColumnsBefore(spreadsheetId, sheetId, 3, 2);
@@ -309,7 +302,7 @@ function testAddColumnsBefore() {
 }
 
 @test:Config {
-    dependsOn: [ testAddSheet, testSetRange ],
+    dependsOn: [ testAddColumnsBefore ],
     enable: true
 }
 function testAddColumnsBeforeBySheetName() {
@@ -324,13 +317,13 @@ function testAddColumnsBeforeBySheetName() {
 }
 
 @test:Config {
-    dependsOn: [ testAddColumnsBefore ],
+    dependsOn: [ testAddColumnsBeforeBySheetName ],
     enable: true
 }
 function testAddColumnsAfter() {
     var openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if (openRes is Sheet) {
-        log:print(openRes.toString());
+        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to add columns after the given index");
         int sheetId = openRes.properties.sheetId;
         var spreadsheetRes = spreadsheetClient->addColumnsAfter(spreadsheetId, sheetId, 5, 2);
@@ -341,7 +334,7 @@ function testAddColumnsAfter() {
 }
 
 @test:Config {
-    dependsOn: [ testAddColumnsBeforeBySheetName ],
+    dependsOn: [ testAddColumnsAfter ],
     enable: true
 }
 function testAddColumnsAfterBySheetName() {
@@ -351,7 +344,7 @@ function testAddColumnsAfterBySheetName() {
 }
 
 @test:Config {
-    dependsOn: [ testAddSheet ],
+    dependsOn: [ testAddColumnsAfterBySheetName ],
     enable: true
 }
 function testCreateOrUpdateColumn() {
@@ -371,7 +364,7 @@ function testCreateOrUpdateColumn() {
 function testGetColumn() {
     var spreadsheetRes = spreadsheetClient->getColumn(spreadsheetId, testSheetName, "I");
     if (spreadsheetRes is (string|int|float)[]) {
-        log:print(spreadsheetRes.toString());
+        log:printInfo(spreadsheetRes.toString());
         (int|string|float)[] expectedValue = ["Update", "Column", "Values"];
         test:assertEquals(spreadsheetRes.toString(), expectedValue.toString(), msg = "Failed to get the column values");
     } else {
@@ -380,13 +373,13 @@ function testGetColumn() {
 }
 
 @test:Config {
-    dependsOn: [ testAddColumnsAfter ],
+    dependsOn: [ testGetColumn ],
     enable: true
 }
 function testDeleteColumns() {
     var openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if (openRes is Sheet) {
-        log:print(openRes.toString());
+        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to delete columns");
         int sheetId = openRes.properties.sheetId;
         var spreadsheetRes = spreadsheetClient->deleteColumns(spreadsheetId, sheetId, 3, 2);
@@ -397,7 +390,7 @@ function testDeleteColumns() {
 }
 
 @test:Config {
-    dependsOn: [ testAddColumnsAfterBySheetName ],
+    dependsOn: [ testDeleteColumns ],
     enable: true
 }
 function testDeleteColumnsBySheetName() {
@@ -407,13 +400,13 @@ function testDeleteColumnsBySheetName() {
 }
 
 @test:Config {
-    dependsOn: [ testAddSheet, testSetRange ],
+    dependsOn: [ testDeleteColumnsBySheetName ],
     enable: true
 }
 function testAddRowsBefore() {
     var openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if (openRes is Sheet) {
-        log:print(openRes.toString());
+        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to add rows before the given index");
         int sheetId = openRes.properties.sheetId;
         var spreadsheetRes = spreadsheetClient->addRowsBefore(spreadsheetId, sheetId, 4, 2);
@@ -424,7 +417,7 @@ function testAddRowsBefore() {
 }
 
 @test:Config {
-    dependsOn: [ testDeleteColumnsBySheetName ],
+    dependsOn: [ testAddRowsBefore ],
     enable: true
 }
 function testAddRowsBeforeBySheetName() {
@@ -434,13 +427,13 @@ function testAddRowsBeforeBySheetName() {
 }
 
 @test:Config {
-    dependsOn: [ testAddRowsBefore ],
+    dependsOn: [ testAddRowsBeforeBySheetName ],
     enable: true
 }
 function testAddRowsAfter() {
     var openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if (openRes is Sheet) {
-        log:print(openRes.toString());
+        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to add rows after the given index");
         int sheetId = openRes.properties.sheetId;
         var spreadsheetRes = spreadsheetClient->addRowsAfter(spreadsheetId, sheetId, 6, 2);
@@ -451,7 +444,7 @@ function testAddRowsAfter() {
 }
 
 @test:Config {
-    dependsOn: [ testAddRowsBeforeBySheetName ],
+    dependsOn: [ testAddRowsAfter ],
     enable: true
 }
 function testAddRowsAfterBySheetName() {
@@ -461,7 +454,7 @@ function testAddRowsAfterBySheetName() {
 }
 
 @test:Config {
-    dependsOn: [ testAddSheet ],
+    dependsOn: [ testAddRowsAfterBySheetName ],
     enable: true
 }
 function testCreateOrUpdateRow() {
@@ -482,7 +475,7 @@ function testCreateOrUpdateRow() {
 function testGetRow() {
     var spreadsheetRes = spreadsheetClient->getRow(spreadsheetId, testSheetName, 10);
     if (spreadsheetRes is (string|int|float)[]) {
-        log:print(spreadsheetRes.toString());
+        log:printInfo(spreadsheetRes.toString());
         (int|string|float)[] expectedValue = ["Update", "Row", "Values"];
         test:assertEquals(spreadsheetRes.toString(), expectedValue.toString(), msg = "Failed to get the row values");
     } else {
@@ -491,13 +484,13 @@ function testGetRow() {
 }
 
 @test:Config {
-    dependsOn: [ testAddRowsAfter ],
+    dependsOn: [ testGetRow ],
     enable: true
 }
 function testDeleteRows() {
     var openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if (openRes is Sheet) {
-        log:print(openRes.toString());
+        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to delete rows");
         int sheetId = openRes.properties.sheetId;
         var spreadsheetRes = spreadsheetClient->deleteRows(spreadsheetId, sheetId, 4, 2);
@@ -508,7 +501,7 @@ function testDeleteRows() {
 }
 
 @test:Config {
-    dependsOn: [ testAddRowsAfterBySheetName ],
+    dependsOn: [ testDeleteRows ],
     enable: true
 }
 function testDeleteRowsBySheetName() {
@@ -518,7 +511,7 @@ function testDeleteRowsBySheetName() {
 }
 
 @test:Config {
-    dependsOn: [ testAddSheet ],
+    dependsOn: [ testDeleteRowsBySheetName ],
     enable: true
 }
 function testSetCell() {
@@ -537,7 +530,7 @@ function testSetCell() {
 function testGetCell() {
     var spreadsheetRes = spreadsheetClient->getCell(spreadsheetId, testSheetName, "H1");
     if (spreadsheetRes is (string|int|float)) {
-        log:print(spreadsheetRes.toString());
+        log:printInfo(spreadsheetRes.toString());
         test:assertEquals(spreadsheetRes.toString(), "ModifiedValue", msg = "Failed to get the cell value");
     } else {
         test:assertFail(spreadsheetRes.message());
@@ -545,7 +538,7 @@ function testGetCell() {
 }
 
 @test:Config {
-    dependsOn: [ testSetCell, testGetCell ],
+    dependsOn: [ testGetCell ],
     enable: true
 }
 function testClearCell() {
@@ -558,7 +551,7 @@ function testClearCell() {
 }
 
 @test:Config {
-    dependsOn: [ testDeleteRows ],
+    dependsOn: [ testClearCell ],
     enable: true
 }
 function testAppendRowToSheet() {
@@ -600,13 +593,13 @@ function testAppendCell() {
 }
 
 @test:Config {
-    dependsOn: [ testAddSheet ],
+    dependsOn: [ testAppendCell ],
     enable: true
 }
 function testCopyTo() {
     var openRes = spreadsheetClient->getSheetByName(spreadsheetId, testSheetName);
     if (openRes is Sheet) {
-        log:print(openRes.toString());
+        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, testSheetName, msg = "Failed to copy the sheet");
         int sheetId = openRes.properties.sheetId;
         var spreadsheetRes = spreadsheetClient->copyTo(spreadsheetId, sheetId, spreadsheetId);
@@ -617,7 +610,7 @@ function testCopyTo() {
 }
 
 @test:Config {
-    dependsOn: [ testDeleteRowsBySheetName ],
+    dependsOn: [ testCopyTo ],
     enable: true
 }
 function testCopyToBySheetName() {
@@ -626,14 +619,14 @@ function testCopyToBySheetName() {
 }
 
 @test:Config {
-    dependsOn: [ testCopyTo ],
+    dependsOn: [ testCopyToBySheetName ],
     enable: true
 }
 function testClearAll() {
     string newName = "Copy of " + testSheetName;
     var openRes = spreadsheetClient->getSheetByName(spreadsheetId, newName);
     if (openRes is Sheet) {
-        log:print(openRes.toString());
+        log:printInfo(openRes.toString());
         test:assertEquals(openRes.properties.title, newName, msg = "Failed to clear the sheet");
         int sheetId = openRes.properties.sheetId;
         var spreadsheetRes = spreadsheetClient->clearAll(spreadsheetId, sheetId);
@@ -644,7 +637,7 @@ function testClearAll() {
 }
 
 @test:Config {
-    dependsOn: [ testClearAll, testGetRange ],
+    dependsOn: [ testClearAll ],
     enable: true
 }
 function testClearAllBySheetName() {
@@ -664,7 +657,7 @@ function testClearAllBySheetName() {
 // function testCreateSpreadsheetWithBearerToken() {
 //     var spreadsheetRes = spreadsheetClientWithBearerToken->createSpreadsheet(createSpreadsheetName);
 //     if (spreadsheetRes is Spreadsheet) {
-//         log:print(spreadsheetRes.toString());
+//         log:printInfo(spreadsheetRes.toString());
 //         test:assertNotEquals(spreadsheetRes.spreadsheetId, "", msg = "Failed to create spreadsheet");
 //     } else {
 //         test:assertFail(spreadsheetRes.message());

@@ -15,7 +15,6 @@
 // under the License.
 
 import ballerina/log;
-import ballerina/regex;
 import ballerina/time;
 import ballerinax/googleapis_drive as drive;
 
@@ -24,7 +23,7 @@ import ballerinax/googleapis_drive as drive;
 # + driveClient - Drive client connecter. 
 # + specificParentFolderId - The Folder Id for the parent folder.
 # + return - If successful, returns boolean. Else error.
-function checkMimeType(drive:Client driveClient, string specificParentFolderId) returns boolean|error {
+isolated function checkMimeType(drive:Client driveClient, string specificParentFolderId) returns boolean|error {
     drive:File item = check driveClient->getFile(specificParentFolderId, "mimeType,trashed");
     if (item?.mimeType.toString() == SPREADSHEET) {
         if (item?.trashed == true) {
@@ -46,8 +45,8 @@ function checkMimeType(drive:Client driveClient, string specificParentFolderId) 
 # + driveClient - Google drive client
 # + fileId - FileId that you want to initiate watch operations. Optional. 
 #            Dont specify if you want TO trigger the listener for all the changes.
-# + return 'drive:WatchResponse' on success and error if unsuccessful
-function startWatchChannel(string callbackURL, drive:Client driveClient, string? fileId = ()) 
+# + return - 'drive:WatchResponse' on success and error if unsuccessful
+isolated function startWatchChannel(string callbackURL, drive:Client driveClient, string? fileId = ()) 
                     returns drive:WatchResponse|error {
     if (fileId is string) {
         // Watch for specified file changes
@@ -64,13 +63,13 @@ function startWatchChannel(string callbackURL, drive:Client driveClient, string?
 # + watchResourceId - An opaque value that identifies the watched resource
 # 
 # + return - Returns error, if unsuccessful.
-function stopWatchChannel(drive:Client driveClient, string channelUuid, string watchResourceId) returns error? {
+isolated function stopWatchChannel(drive:Client driveClient, string channelUuid, string watchResourceId) returns error? {
     boolean|error response = driveClient->watchStop(channelUuid, watchResourceId);
     if (response is boolean) {
-        log:print("Watch channel stopped");
+        log:printInfo("Watch channel stopped");
         return;
     } else {
-        log:print("Watch channel was not stopped");
+        log:printInfo("Watch channel was not stopped");
         return response;
     }
 }
@@ -82,10 +81,10 @@ function stopWatchChannel(drive:Client driveClient, string channelUuid, string w
 # + resourceId - An opaque ID that identifies the resource being watched on this channel.
 #                Stable across different API versions.
 # + return - If unsuccessful, return error.
-function getCurrentStatusOfFile(drive:Client driveClient, json[] curretStatus, string resourceId) returns error? {
+isolated function getCurrentStatusOfFile(drive:Client driveClient, json[] curretStatus, string resourceId) returns error? {
     curretStatus.removeAll();
     drive:File response = check driveClient->getFile(resourceId, "createdTime,modifiedTime,trashed");
-    log:print("Curent status : " + response.toString());
+    log:printInfo("Curent status : " + response.toString());
     json output = check response.cloneWithType(json);
     curretStatus.push(output);
 }
@@ -102,7 +101,7 @@ function getCurrentStatusOfDrive(drive:Client driveClient, json[] curretStatus) 
         q : "mimeType = 'application/vnd.google-apps.spreadsheet' and trashed = false"
     };
     getAllMetaData(driveClient, optionalSearch, curretStatus);
-    log:print("Spreadsheet Count : " + curretStatus.length().toString());
+    log:printInfo("Spreadsheet Count : " + curretStatus.length().toString());
 }
 
 # Get current status of a drive. 
@@ -110,7 +109,7 @@ function getCurrentStatusOfDrive(drive:Client driveClient, json[] curretStatus) 
 # + driveClient - Http client for Drive connection. 
 # + optionalSearch - 'ListFilesOptional' object that is used during listing objects in drive.
 # + curretStatus - JSON that carries the current status.
-function getAllMetaData(drive:Client driveClient, drive:ListFilesOptional optionalSearch, json[] curretStatus) {
+public function getAllMetaData(drive:Client driveClient, drive:ListFilesOptional optionalSearch, json[] curretStatus) {
     stream<drive:File>|error res = driveClient->getFiles(optionalSearch);
     if (res is stream<drive:File>) {
         error? e = res.forEach(function(drive:File file) {
@@ -124,8 +123,8 @@ function getAllMetaData(drive:Client driveClient, drive:ListFilesOptional option
 # + driveClient - The HTTP Client
 # + pageToken - The token for continuing a previous list request on the next page. This should be set to the value of 
 #               'nextPageToken' from the previous response or to the response from the getStartPageToken method.
-# + return 'drive:ChangesListResponse[]' on success and error if unsuccessful.
-function getAllChangeList(string pageToken, drive:Client driveClient) returns drive:ChangesListResponse[]|error {
+# + return - 'drive:ChangesListResponse[]' on success and error if unsuccessful.
+isolated function getAllChangeList(string pageToken, drive:Client driveClient) returns drive:ChangesListResponse[]|error {
     drive:ChangesListResponse[] changeList = [];
     string? token = pageToken;
     while (token is string) {
@@ -144,7 +143,7 @@ function getAllChangeList(string pageToken, drive:Client driveClient) returns dr
 # + driveClient - Drive connecter client
 # + eventService - 'OnEventService' object 
 # + return - If it is modified, returns boolean(true). Else error.
-function mapFileUpdateEvents(string resourceId, drive:ChangesListResponse changeList, drive:Client driveClient, 
+isolated function mapFileUpdateEvents(string resourceId, drive:ChangesListResponse changeList, drive:Client driveClient, 
                              OnEventService eventService, json[] statusStore) returns error? {
     drive:Change[]? changes = changeList?.changes;
     if (changes is drive:Change[] && changes.length() > 0) {
@@ -160,7 +159,7 @@ function mapFileUpdateEvents(string resourceId, drive:ChangesListResponse change
                     if (istrashed == true) {
                         var x = eventService.onSheetDeletedEvent(fileId);
                     } else if (isModified) {
-                        log:print("Sheet modification has been found");
+                        log:printInfo("Sheet modification has been found");
                         //need to handle for spec from here var x = eventService.onFileUpdateEvent(fileOrFolderId);
                         var x = eventService.onFileUpdateEvent(fileId);
                     }
@@ -176,8 +175,8 @@ function mapFileUpdateEvents(string resourceId, drive:ChangesListResponse change
 # + changeList - 'ChangesListResponse' record that contains the whole changeList.
 # + driveClient - Http client for client connection.
 # + eventService - 'OnEventService' record that represents all events.
-# + return if unsucessful, returns error. 
-function mapEvents(drive:ChangesListResponse changeList, drive:Client driveClient, OnEventService eventService, 
+# + return - if unsucessful, returns error. 
+isolated function mapEvents(drive:ChangesListResponse changeList, drive:Client driveClient, OnEventService eventService, 
                    json[] statusStore) returns error? {
     drive:Change[]? changes = changeList?.changes;
     if (changes is drive:Change[] && changes.length() > 0) {
@@ -188,7 +187,7 @@ function mapEvents(drive:ChangesListResponse changeList, drive:Client driveClien
                 string mimeType = fileOrFolder?.mimeType.toString();
                 if (mimeType == changeLog?.file?.mimeType.toString()) {
                     if (mimeType == SPREADSHEET) {
-                        log:print("GSheet change event found in sheet id : " + fileOrFolderId);
+                        log:printInfo("GSheet change event found in sheet id : " + fileOrFolderId);
                         if (changeLog?.removed == true) {
                             eventService.onSheetDeletedEvent(fileOrFolderId);
                         } else {
@@ -209,18 +208,12 @@ function mapEvents(drive:ChangesListResponse changeList, drive:Client driveClien
 # + lastRecordedTime - The Folder Id for the parent folder.
 # + return - If it is modified, returns boolean(true). Else error.
 isolated function checkforModificationAftertheLastOne(string eventTime, string lastRecordedTime) returns boolean|error {
-    string timeFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     boolean isModified = false;
-    string eventTimeFormated = regex:replaceAll(eventTime, "Z", "+0000");
-    string lastRecordedFormated = regex:replaceAll(lastRecordedTime, "Z", "+0000");
-    time:Time eventTimeUNIX = check time:parse(eventTimeFormated, timeFormat);
-    time:Time lastRecordedTimeUNIX = check time:parse(lastRecordedFormated, timeFormat);
-    time:Duration due = check time:getDifference(eventTimeUNIX, lastRecordedTimeUNIX);
-    foreach int item in due {
-        if (item < 0) {
-            isModified = true;
-            break;
-        }
+    time:Utc eventTimeUNIX = check time:utcFromString(eventTime);
+    time:Utc lastRecordedTimeUNIX = check time:utcFromString(lastRecordedTime);
+    time:Seconds due = time:utcDiffSeconds(eventTimeUNIX, lastRecordedTimeUNIX);
+    if (due < 0) {
+        isModified = true;
     }
     return isModified;
 }
@@ -229,8 +222,8 @@ isolated function checkforModificationAftertheLastOne(string eventTime, string l
 # + fileId - fileId that subjected to a change. 
 # + driveClient - Http client for client connection.
 # + eventService - 'OnEventService' record that represents all events.
-# + return if unsucessful, returns error. 
-function identifyFileEvent(string fileId, OnEventService eventService, drive:Client driveClient, json[] statusStore, 
+# + return - if unsucessful, returns error. 
+isolated function identifyFileEvent(string fileId, OnEventService eventService, drive:Client driveClient, json[] statusStore, 
                            string? specFolderId = ()) returns error? {
     drive:File file = check driveClient->getFile(fileId, "createdTime,modifiedTime,trashed,parents");
     boolean isExisitingFile = check checkAvailability(fileId, statusStore);

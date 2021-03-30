@@ -18,7 +18,7 @@ import ballerina/http;
 import ballerina/jballerina.java as java;
 import ballerina/regex;
 
-function sendRequestWithPayload(http:Client httpClient, string path, json jsonPayload = ())
+isolated function sendRequestWithPayload(http:Client httpClient, string path, json jsonPayload = ())
 returns @tainted json | error {
     http:Request httpRequest = new;
     if (jsonPayload != ()) {
@@ -42,7 +42,7 @@ returns @tainted json | error {
     }
 }
 
-function sendRequest(http:Client httpClient, string path) returns @tainted json | error {
+isolated function sendRequest(http:Client httpClient, string path) returns @tainted json | error {
     var httpResponse = httpClient->get(<@untainted>path);
     if (httpResponse is http:Response) {
         int statusCode = httpResponse.statusCode;
