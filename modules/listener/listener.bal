@@ -70,7 +70,7 @@ public class GoogleSheetEventListener {
         return self.httpListener.'start();
     }
 
-    public function gracefulStop() returns error? {
+    public isolated function gracefulStop() returns error? {
         check stopWatchChannel(self.driveClient, self.channelUuid, self.watchResourceId);
         return self.httpListener.gracefulStop();
     }
