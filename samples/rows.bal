@@ -40,7 +40,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -49,7 +49,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
         sheetId = sheet.properties.sheetId;
     } else {
@@ -83,7 +83,7 @@ public function main() {
         // Gets the values in the given row in a Worksheet with given name.
         (string|int|float)[]|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
         if (row is (string|int|float)[]) {
-            log:print(row.toString());
+            log:printInfo(row.toString());
         } else {
             log:printError("Error: " + row.toString());
         }
@@ -95,7 +95,7 @@ public function main() {
         // Gets the given range of the Sheet
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1Notation);
         if (getValuesResult is sheets:Range) {
-            log:print("Range Details: " + getValuesResult.values.toString());
+            log:printInfo("Range Details: " + getValuesResult.values.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
         }

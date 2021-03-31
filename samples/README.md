@@ -32,7 +32,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
     } else {
         log:printError("Error: " + response.toString());
     }
@@ -71,7 +71,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -81,7 +81,7 @@ public function main() {
     // Spreadsheet ID in the URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=0"
     sheets:Spreadsheet|error spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
     if (spreadsheet is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + spreadsheet.toString());
+        log:printInfo("Spreadsheet Details: " + spreadsheet.toString());
     } else {
         log:printError("Error: " + spreadsheet.toString());
     }
@@ -119,7 +119,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -129,7 +129,7 @@ public function main() {
     string url = "https://docs.google.com/spreadsheets/d/" + spreadsheetId + "/edit#gid=0";
     sheets:Spreadsheet|error spreadsheet = spreadsheetClient->openSpreadsheetByUrl(url);
     if (spreadsheet is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + spreadsheet.toString());
+        log:printInfo("Spreadsheet Details: " + spreadsheet.toString());
     } else {
         log:printError("Error: " + spreadsheet.toString());
     }
@@ -167,7 +167,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -180,7 +180,7 @@ public function main() {
         // Spreadsheet ID in the URL "https://docs.google.com/spreadsheets/d/" + <spreadsheetId> + "/edit#gid=0"
         sheets:Spreadsheet|error spreadsheet = spreadsheetClient->openSpreadsheetById(spreadsheetId);
         if (spreadsheet is sheets:Spreadsheet) {
-            log:print("Spreadsheet Name: " + spreadsheet.properties.title.toString());
+            log:printInfo("Spreadsheet Name: " + spreadsheet.properties.title.toString());
         } else {
             log:printError("Error: " + spreadsheet.toString());
         }
@@ -221,7 +221,7 @@ public function main() {
     stream<sheets:File>|error response = spreadsheetClient->getAllSpreadsheets();
     if (response is stream<sheets:File>) {
         error? e = response.forEach(function (sheets:File spreadsheet) {
-            log:print("Spreadsheet Name: " + spreadsheet.name.toString() + " | Spreadsheet ID: " 
+            log:printInfo("Spreadsheet Name: " + spreadsheet.name.toString() + " | Spreadsheet ID: " 
                 + spreadsheet.id.toString());
         }); 
     } else {
@@ -265,7 +265,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -274,7 +274,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID  
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
     } else {
         log:printError("Error: " + sheet.toString());
     }
@@ -313,7 +313,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -322,7 +322,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID  
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
     } else {
         log:printError("Error: " + sheet.toString());
@@ -331,7 +331,7 @@ public function main() {
     // Get Worksheet with given name from the Spreadsheet with the given Spreadsheet ID
     sheets:Sheet|error spreadsheetRes = spreadsheetClient->getSheetByName(spreadsheetId, sheetName);
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
     } else {
         log:printError("Error: " + sheet.toString());
     }
@@ -370,7 +370,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -379,7 +379,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID  
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
     } else {
         log:printError("Error: " + sheet.toString());
@@ -390,7 +390,7 @@ public function main() {
     if (spreadsheetRes is ()) {
         var openRes = spreadsheetClient->getSheetByName(spreadsheetId, "RenamedWorksheet");
         if (openRes is sheets:Sheet) {
-            log:print("Sheet Details: " + openRes.toString());
+            log:printInfo("Sheet Details: " + openRes.toString());
         } else {
             log:printError("Error: " + openRes.toString());
         }
@@ -432,7 +432,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -441,7 +441,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID  
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetId = sheet.properties.sheetId;
     } else {
         log:printError("Error: " + sheet.toString());
@@ -452,7 +452,7 @@ public function main() {
     if (spreadsheetRes is ()) {
         sheets:Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, "NewSpreadsheet");
         if (openRes is sheets:Sheet) {
-            log:print("Sheet Details: " + openRes.toString());
+            log:printInfo("Sheet Details: " + openRes.toString());
         } else {
             log:printError("Error: " + openRes.toString());
         }
@@ -494,7 +494,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -503,7 +503,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID  
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
     } else {
         log:printError("Error: " + sheet.toString());
@@ -514,7 +514,7 @@ public function main() {
     if (spreadsheetRes is ()) {
         sheets:Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, sheetName);
         if (openRes is sheets:Sheet) {
-            log:print("Sheet Details: " + openRes.toString());
+            log:printInfo("Sheet Details: " + openRes.toString());
         } else {
             log:printError("Error: " + openRes.toString());
         }
@@ -556,7 +556,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -565,7 +565,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID  
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
     } else {
         log:printError("Error: " + sheet.toString());
@@ -574,7 +574,7 @@ public function main() {
     sheets:Sheet[]|error sheetsRes = spreadsheetClient->getSheets(spreadsheetId);
     if (sheetsRes is sheets:Sheet[]) {
         error? e = sheetsRes.forEach(function (sheets:Sheet worksheet) {
-        log:print("Worksheet Name: " + worksheet.properties.title.toString() + " | Worksheet ID: " 
+        log:printInfo("Worksheet Name: " + worksheet.properties.title.toString() + " | Worksheet ID: " 
             + worksheet.properties.sheetId.toString());
     }); 
     } else {
@@ -618,7 +618,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -627,7 +627,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
     } else {
         log:printError("Error: " + sheet.toString());
@@ -649,7 +649,7 @@ public function main() {
         // Gets the given range of the Sheet
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1Notation);
         if (getValuesResult is sheets:Range) {
-            log:print("Range Details: " + getValuesResult.values.toString());
+            log:printInfo("Range Details: " + getValuesResult.values.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
         }
@@ -659,7 +659,7 @@ public function main() {
         if (clear is ()) {
             sheets:Range|error openRes = spreadsheetClient->getRange(spreadsheetId, sheetName, a1Notation);
             if (openRes is sheets:Range) {
-                log:print("Range Details: " + openRes.values.toString());
+                log:printInfo("Range Details: " + openRes.values.toString());
             } else {
                 log:printError("Error: " + openRes.toString());
             }
@@ -714,7 +714,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -723,7 +723,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
         sheetId = sheet.properties.sheetId;
     } else {
@@ -757,7 +757,7 @@ public function main() {
         // Gets the values in the given column in a Worksheet with given name.
         (string|int|float)[]|error column = spreadsheetClient->getColumn(spreadsheetId, sheetName, "I");
         if (column is (string|int|float)[]) {
-            log:print(column.toString());
+            log:printInfo(column.toString());
         } else {
             log:printError("Error: " + column.toString());
         }
@@ -769,7 +769,7 @@ public function main() {
         // Gets the given range of the Sheet
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1Notation);
         if (getValuesResult is sheets:Range) {
-            log:print("Range Details: " + getValuesResult.values.toString());
+            log:printInfo("Range Details: " + getValuesResult.values.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
         }
@@ -837,7 +837,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -846,7 +846,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
         sheetId = sheet.properties.sheetId;
     } else {
@@ -880,7 +880,7 @@ public function main() {
         // Gets the values in the given row in a Worksheet with given name.
         (string|int|float)[]|error row = spreadsheetClient->getRow(spreadsheetId, sheetName, 10);
         if (row is (string|int|float)[]) {
-            log:print(row.toString());
+            log:printInfo(row.toString());
         } else {
             log:printError("Error: " + row.toString());
         }
@@ -892,7 +892,7 @@ public function main() {
         // Gets the given range of the Sheet
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1Notation);
         if (getValuesResult is sheets:Range) {
-            log:print("Range Details: " + getValuesResult.values.toString());
+            log:printInfo("Range Details: " + getValuesResult.values.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
         }
@@ -958,7 +958,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -967,7 +967,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
     } else {
         log:printError("Error: " + sheet.toString());
@@ -981,7 +981,7 @@ public function main() {
         // Gets the value of the given cell of the Sheet
         (string|int|float)|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
         if (getValuesResult is (string|int|float)) {
-            log:print("Cell Details: " + getValuesResult.toString());
+            log:printInfo("Cell Details: " + getValuesResult.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
         }
@@ -991,7 +991,7 @@ public function main() {
         if (clear is ()) {
             (string|int|float)|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
             if (openRes is (string|int|float)) {
-                log:print("Cell Details: " + openRes.toString());
+                log:printInfo("Cell Details: " + openRes.toString());
             } else {
                 log:printError("Error: " + openRes.toString());
             }
@@ -1047,7 +1047,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -1056,7 +1056,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
         sheetId = sheet.properties.sheetId;
     } else {
@@ -1086,7 +1086,7 @@ public function main() {
         string a1NotationAppend = "A1:D7";
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1NotationAppend);
         if (getValuesResult is sheets:Range) {
-            log:print("Range Details: " + getValuesResult.values.toString());
+            log:printInfo("Range Details: " + getValuesResult.values.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
         }
@@ -1129,7 +1129,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -1138,7 +1138,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
         sheetId = sheet.properties.sheetId;
     } else {
@@ -1170,7 +1170,7 @@ public function main() {
         string a1NotationAppend = "B2:E8";
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1NotationAppend);
         if (getValuesResult is sheets:Range) {
-            log:print("Range Details: " + getValuesResult.values.toString());
+            log:printInfo("Range Details: " + getValuesResult.values.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
         }
@@ -1213,7 +1213,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -1222,7 +1222,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
         sheetId = sheet.properties.sheetId;
     } else {
@@ -1253,7 +1253,7 @@ public function main() {
         string a1NotationAppend = "B2:E8";
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1NotationAppend);
         if (getValuesResult is sheets:Range) {
-            log:print("Range Details: " + getValuesResult.values.toString());
+            log:printInfo("Range Details: " + getValuesResult.values.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
         }
@@ -1296,7 +1296,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -1305,7 +1305,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
         sheetId = sheet.properties.sheetId;
     } else {
@@ -1332,7 +1332,7 @@ public function main() {
         sheets:Sheet[]|error sheetsRes = spreadsheetClient->getSheets(spreadsheetId);
         if (sheetsRes is sheets:Sheet[]) {
             error? e = sheetsRes.forEach(function (sheets:Sheet worksheet) {
-                log:print("Worksheet Name: " + worksheet.properties.title.toString() + " | Worksheet ID: " 
+                log:printInfo("Worksheet Name: " + worksheet.properties.title.toString() + " | Worksheet ID: " 
                     + worksheet.properties.sheetId.toString());
             }); 
         } else {
@@ -1377,7 +1377,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -1386,7 +1386,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
         sheetId = sheet.properties.sheetId;
     } else {
@@ -1413,7 +1413,7 @@ public function main() {
         sheets:Sheet[]|error sheetsRes = spreadsheetClient->getSheets(spreadsheetId);
         if (sheetsRes is sheets:Sheet[]) {
             error? e = sheetsRes.forEach(function (sheets:Sheet worksheet) {
-                log:print("Worksheet Name: " + worksheet.properties.title.toString() + " | Worksheet ID: " 
+                log:printInfo("Worksheet Name: " + worksheet.properties.title.toString() + " | Worksheet ID: " 
                     + worksheet.properties.sheetId.toString());
             }); 
         } else {
@@ -1458,7 +1458,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -1467,7 +1467,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
         sheetId = sheet.properties.sheetId;
     } else {
@@ -1494,7 +1494,7 @@ public function main() {
         string a1NotationAppend = "A1:D5";
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1NotationAppend);
         if (getValuesResult is sheets:Range) {
-            log:print("Range Details: " + getValuesResult.values.toString());
+            log:printInfo("Range Details: " + getValuesResult.values.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
         }
@@ -1537,7 +1537,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -1546,7 +1546,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
         sheetId = sheet.properties.sheetId;
     } else {
@@ -1573,7 +1573,7 @@ public function main() {
         string a1NotationAppend = "A1:D5";
         sheets:Range|error getValuesResult = spreadsheetClient->getRange(spreadsheetId, sheetName, a1NotationAppend);
         if (getValuesResult is sheets:Range) {
-            log:print("Range Details: " + getValuesResult.values.toString());
+            log:printInfo("Range Details: " + getValuesResult.values.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
         }

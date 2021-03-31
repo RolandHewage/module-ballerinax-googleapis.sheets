@@ -38,7 +38,7 @@ public function main() {
     stream<sheets:File>|error response = spreadsheetClient->getAllSpreadsheets();
     if (response is stream<sheets:File>) {
         error? e = response.forEach(function (sheets:File spreadsheet) {
-            log:print("Spreadsheet Name: " + spreadsheet.name.toString() + " | Spreadsheet ID: " 
+            log:printInfo("Spreadsheet Name: " + spreadsheet.name.toString() + " | Spreadsheet ID: " 
                 + spreadsheet.id.toString());
         }); 
     } else {

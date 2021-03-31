@@ -57,7 +57,7 @@ service / on gSheetListener {
     resource function post onChange (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnChangeEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:REMOVE_GRID) {
-            log:print("Received Worksheet Delete Grid Event");
+            log:printInfo("Received Worksheet Delete Grid Event");
             // Write your logic here.....
         }
     }

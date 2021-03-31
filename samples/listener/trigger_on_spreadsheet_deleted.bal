@@ -24,7 +24,7 @@ public class EventTrigger {
     public isolated function onNewSheetCreatedEvent(string fileId) {}
 
     public isolated function onSheetDeletedEvent(string fileId) {
-        log:print("This File was removed to the trash : " + fileId);
+        log:printInfo("This File was removed to the trash : " + fileId);
         // Write your logic here.....
     }
 

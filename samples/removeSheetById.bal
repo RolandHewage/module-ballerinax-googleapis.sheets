@@ -39,7 +39,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -48,7 +48,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID  
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetId = sheet.properties.sheetId;
     } else {
         log:printError("Error: " + sheet.toString());
@@ -59,7 +59,7 @@ public function main() {
     if (spreadsheetRes is ()) {
         sheets:Sheet|error openRes = spreadsheetClient->getSheetByName(spreadsheetId, "NewSpreadsheet");
         if (openRes is sheets:Sheet) {
-            log:print("Sheet Details: " + openRes.toString());
+            log:printInfo("Sheet Details: " + openRes.toString());
         } else {
             log:printError("Error: " + openRes.toString());
         }

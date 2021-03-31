@@ -57,7 +57,7 @@ service / on gSheetListener {
     resource function post onChange (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnChangeEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:REMOVE_ROW) {
-            log:print("Received Worksheet Delete Row Event");
+            log:printInfo("Received Worksheet Delete Row Event");
             // Write your logic here.....
         }
     }

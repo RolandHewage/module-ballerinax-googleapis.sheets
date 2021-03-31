@@ -36,7 +36,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
     } else {
         log:printError("Error: " + response.toString());
     }

@@ -57,7 +57,7 @@ service / on gSheetListener {
     resource function post onChange (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnChangeEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:INSERT_ROW) {
-            log:print("Received Worksheet Insert Row Event");
+            log:printInfo("Received Worksheet Insert Row Event");
             // Write your logic here.....
         }
     }

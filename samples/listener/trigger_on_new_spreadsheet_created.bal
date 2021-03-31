@@ -22,7 +22,7 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 # Event Trigger class
 public class EventTrigger {
     public isolated function onNewSheetCreatedEvent(string fileId) {
-        log:print("New File was created : " + fileId);
+        log:printInfo("New File was created : " + fileId);
         // Write your logic here.....
     }
 

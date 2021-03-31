@@ -39,7 +39,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -48,7 +48,7 @@ public function main() {
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID 
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
     } else {
         log:printError("Error: " + sheet.toString());
@@ -62,7 +62,7 @@ public function main() {
         // Gets the value of the given cell of the Sheet
         (string|int|float)|error getValuesResult = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
         if (getValuesResult is (string|int|float)) {
-            log:print("Cell Details: " + getValuesResult.toString());
+            log:printInfo("Cell Details: " + getValuesResult.toString());
         } else {
             log:printError("Error: " + getValuesResult.toString());
         }
@@ -72,7 +72,7 @@ public function main() {
         if (clear is ()) {
             (string|int|float)|error openRes = spreadsheetClient->getCell(spreadsheetId, sheetName, a1Notation);
             if (openRes is (string|int|float)) {
-                log:print("Cell Details: " + openRes.toString());
+                log:printInfo("Cell Details: " + openRes.toString());
             } else {
                 log:printError("Error: " + openRes.toString());
             }

@@ -38,7 +38,7 @@ public function main() {
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -48,7 +48,7 @@ public function main() {
     string url = "https://docs.google.com/spreadsheets/d/" + spreadsheetId + "/edit#gid=0";
     sheets:Spreadsheet|error spreadsheet = spreadsheetClient->openSpreadsheetByUrl(url);
     if (spreadsheet is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + spreadsheet.toString());
+        log:printInfo("Spreadsheet Details: " + spreadsheet.toString());
     } else {
         log:printError("Error: " + spreadsheet.toString());
     }
