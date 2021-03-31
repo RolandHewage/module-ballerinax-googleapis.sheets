@@ -1,18 +1,18 @@
 [[dependency]]
 org = "ballerina"
-name = "log"
+name = "http"
 version = "1.1.0-alpha5"
-
-[[dependency]]
-org = "ballerina"
-name = "regex"
-version = "0.7.0-alpha5"
 
 [[dependency]]
 org = "ballerinax"
 name = "googleapis_drive"
 version = "0.1.1"
 repository = "local"
+
+[[dependency]]
+org = "ballerina"
+name = "log"
+version = "1.1.0-alpha5"
 
 [[dependency]]
 org = "ballerina"
@@ -26,7 +26,7 @@ version = "2.0.0-alpha5"
 
 [[dependency]]
 org = "ballerina"
-name = "http"
-version = "1.1.0-alpha5"
+name = "regex"
+version = "0.7.0-alpha5"
 
 

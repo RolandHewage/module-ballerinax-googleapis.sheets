@@ -236,17 +236,17 @@ Then you need to create the Event Trigger Class with the implementations for the
 # Event Trigger class
 public class sheetsListener:EventTrigger {
     public isolated function onNewSheetCreatedEvent(string fileId) {
-        log:print("New File was created : " + fileId);
+        log:printInfo("New File was created : " + fileId);
         // Write your logic here.....
     }
 
     public isolated function onSheetDeletedEvent(string fileId) {
-        log:print("This File was removed to the trash : " + fileId);
+        log:printInfo("This File was removed to the trash : " + fileId);
         // Write your logic here.....
     }
 
     public isolated function onFileUpdateEvent(string fileId) {
-        log:print("The File was updated : " + fileId);
+        log:printInfo("The File was updated : " + fileId);
         // Write your logic here.....
     }
 }
@@ -296,37 +296,37 @@ service / on gSheetListener {
         if (eventType == sheetsListener:ON_EDIT) {  
             sheetsListener:EventInfo eventInfo = check gSheetListener.getOnEditEventType(caller, request);
             if (eventInfo?.eventType == sheetsListener:APPEND_ROW && eventInfo?.editEventInfo != ()) {
-                log:print(eventInfo?.editEventInfo.toString());
+                log:printInfo(eventInfo?.editEventInfo.toString());
                 // Write your logic here.....
             } else if (eventInfo?.eventType == sheetsListener:UPDATE_ROW && eventInfo?.editEventInfo != ()) {
-                log:print(eventInfo?.editEventInfo.toString());
+                log:printInfo(eventInfo?.editEventInfo.toString());
                 // Write your logic here.....
             }
         } else if (eventType == sheetsListener:ON_CHANGE) {
             EventInfo eventInfo = check gSheetListener.getOnChangeEventType(caller, request);
             if (eventInfo?.eventType == sheetsListener:EDIT) {
-                log:print("Received Worksheet Edit Event");
+                log:printInfo("Received Worksheet Edit Event");
                 // Write your logic here.....
             } else if (eventInfo?.eventType == sheetsListener:INSERT_ROW) {
-                log:print("Received Worksheet Insert Row Event");
+                log:printInfo("Received Worksheet Insert Row Event");
                 // Write your logic here.....
             } else if (eventInfo?.eventType == sheetsListener:REMOVE_ROW) {
-                log:print("Received Worksheet Delete Row Event");
+                log:printInfo("Received Worksheet Delete Row Event");
                 // Write your logic here.....
             } else if (eventInfo?.eventType == sheetsListener:INSERT_COLUMN) {
-                log:print("Received Worksheet Insert Column Event");
+                log:printInfo("Received Worksheet Insert Column Event");
                 // Write your logic here.....
             } else if (eventInfo?.eventType == sheetsListener:REMOVE_COLUMN) {
-                log:print("Received Worksheet Delete Column Event");
+                log:printInfo("Received Worksheet Delete Column Event");
                 // Write your logic here.....
             } else if (eventInfo?.eventType == sheetsListener:INSERT_GRID) {
-                log:print("Received Insert Grid Event");
+                log:printInfo("Received Insert Grid Event");
                 // Write your logic here.....
             } else if (eventInfo?.eventType == sheetsListener:REMOVE_GRID) {
-                log:print("Received Delete Grid Event");
+                log:printInfo("Received Delete Grid Event");
                 // Write your logic here.....
             } else if (eventInfo?.eventType == sheetsListener:OTHER) {
-                log:print("Received Other Event");
+                log:printInfo("Received Other Event");
                 // Write your logic here.....
             } 
         } else if (eventType == ON_MANAGE) {
@@ -354,7 +354,7 @@ import ballerinax/googleapis_sheets.'listener as sheetsListener;
 # Event Trigger class
 public class EventTrigger {
     public isolated function onNewSheetCreatedEvent(string fileId) {
-        log:print("New File was created : " + fileId);
+        log:printInfo("New File was created : " + fileId);
         // Write your logic here.....
     }
 
@@ -409,7 +409,7 @@ public class EventTrigger {
     public isolated function onNewSheetCreatedEvent(string fileId) {}
 
     public isolated function onSheetDeletedEvent(string fileId) {
-        log:print("This File was removed to the trash : " + fileId);
+        log:printInfo("This File was removed to the trash : " + fileId);
         // Write your logic here.....
     }
 
@@ -497,10 +497,10 @@ service / on gSheetListener {
     resource function post onEdit (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnEditEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:APPEND_ROW && eventInfo?.editEventInfo != ()) {
-            log:print(eventInfo?.editEventInfo.toString());
+            log:printInfo(eventInfo?.editEventInfo.toString());
             // Write your logic here.....
         } else if (eventInfo?.eventType == sheetsListener:UPDATE_ROW && eventInfo?.editEventInfo != ()) {
-            log:print(eventInfo?.editEventInfo.toString());
+            log:printInfo(eventInfo?.editEventInfo.toString());
             // Write your logic here.....
         }
     }
@@ -554,7 +554,7 @@ service / on gSheetListener {
     resource function post onEdit (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnEditEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:APPEND_ROW && eventInfo?.editEventInfo != ()) {
-            log:print(eventInfo?.editEventInfo.toString());
+            log:printInfo(eventInfo?.editEventInfo.toString());
             // Write your logic here.....
         }
     }
@@ -608,7 +608,7 @@ service / on gSheetListener {
     resource function post onEdit (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnEditEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:UPDATE_ROW && eventInfo?.editEventInfo != ()) {
-            log:print(eventInfo?.editEventInfo.toString());
+            log:printInfo(eventInfo?.editEventInfo.toString());
             // Write your logic here.....
         }
     }
@@ -665,7 +665,7 @@ service / on gSheetListener {
     resource function post onChange (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnChangeEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:INSERT_ROW) {
-            log:print("Received Worksheet Insert Row Event");
+            log:printInfo("Received Worksheet Insert Row Event");
             // Write your logic here.....
         }
     }
@@ -719,7 +719,7 @@ service / on gSheetListener {
     resource function post onChange (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnChangeEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:REMOVE_ROW) {
-            log:print("Received Worksheet Delete Row Event");
+            log:printInfo("Received Worksheet Delete Row Event");
             // Write your logic here.....
         }
     }
@@ -773,7 +773,7 @@ service / on gSheetListener {
     resource function post onChange (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnChangeEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:INSERT_COLUMN) {
-            log:print("Received Worksheet Insert Column Event");
+            log:printInfo("Received Worksheet Insert Column Event");
             // Write your logic here.....
         }
     }
@@ -828,7 +828,7 @@ service / on gSheetListener {
     resource function post onChange (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnChangeEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:REMOVE_COLUMN) {
-            log:print("Received Worksheet Delete Column Event");
+            log:printInfo("Received Worksheet Delete Column Event");
             // Write your logic here.....
         }
     }
@@ -882,7 +882,7 @@ service / on gSheetListener {
     resource function post onChange (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnChangeEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:INSERT_GRID) {
-            log:print("Received Worksheet Insert Grid Event");
+            log:printInfo("Received Worksheet Insert Grid Event");
             // Write your logic here.....
         }
     }
@@ -936,7 +936,7 @@ service / on gSheetListener {
     resource function post onChange (http:Caller caller, http:Request request) returns error? {
         sheetsListener:EventInfo eventInfo = check gSheetListener.getOnChangeEventType(caller, request);
         if (eventInfo?.eventType == sheetsListener:REMOVE_GRID) {
-            log:print("Received Worksheet Delete Grid Event");
+            log:printInfo("Received Worksheet Delete Grid Event");
             // Write your logic here.....
         }
     }

@@ -182,7 +182,7 @@ We must specify the spreadsheet name as a string parameter to the createSpreadsh
     // Create Spreadsheet with given name
     sheets:Spreadsheet|error response = spreadsheetClient->createSpreadsheet("NewSpreadsheet");
     if (response is sheets:Spreadsheet) {
-        log:print("Spreadsheet Details: " + response.toString());
+        log:printInfo("Spreadsheet Details: " + response.toString());
         spreadsheetId = response.spreadsheetId;
     } else {
         log:printError("Error: " + response.toString());
@@ -195,7 +195,7 @@ We must specify the spreadsheet ID and the name for the new worksheet as string 
     // Add a New Worksheet with given name to the Spreadsheet with the given Spreadsheet ID
     sheets:Sheet|error sheet = spreadsheetClient->addSheet(spreadsheetId, "NewWorksheet");
     if (sheet is sheets:Sheet) {
-        log:print("Sheet Details: " + sheet.toString());
+        log:printInfo("Sheet Details: " + sheet.toString());
         sheetName = sheet.properties.title;
     } else {
         log:printError("Error: " + sheet.toString());
