@@ -23,7 +23,7 @@ import ballerinax/googleapis_drive as drive;
 public class GoogleSheetEventListener {
     private http:Listener httpListener;
     private drive:Client driveClient;
-    private OnEventService eventService;
+    // private OnEventService eventService;
 
     private string specificGsheetId;
     private boolean isValidGsheet = false;
@@ -39,7 +39,7 @@ public class GoogleSheetEventListener {
     public function init(SheetListenerConfiguration config) returns error? {
         self.httpListener = check new (config.port);
         self.driveClient = check new (config.driveClientConfiguration);
-        self.eventService = config.eventService;
+        // self.eventService = config.eventService;
         if (config.specificGsheetId is string) {
             self.isValidGsheet = check checkMimeType(self.driveClient, config.specificGsheetId.toString());
         }
@@ -84,8 +84,9 @@ public class GoogleSheetEventListener {
     # + caller - The http caller object for responding to requests 
     # + request - The HTTP request.
     # + return - Returns error, if unsuccessful.
-    public function findEventType(http:Caller caller, http:Request request) returns error? {
+    public function findEventType(http:Caller caller, http:Request request) returns EventInfo[]|error {
         log:print("<< RECEIVING A CALLBACK <<");
+        EventInfo[] events = [];
         string channelID = check request.getHeader("X-Goog-Channel-ID");
         string messageNumber = check request.getHeader("X-Goog-Message-Number");
         string resourceStates = check request.getHeader("X-Goog-Resource-State");
@@ -93,23 +94,24 @@ public class GoogleSheetEventListener {
         if (channelID != self.channelUuid) {
             return error("Diffrent channel IDs found, Resend the watch request");
         } else {
-            drive:ChangesListResponse[] response = check getAllChangeList(self.currentToken, self.driveClient);
-            foreach drive:ChangesListResponse item in response {
-                self.currentToken = item?.newStartPageToken.toString();
-                if (self.isValidGsheet) {
-                    log:print("File watch response processing");
-                    check mapFileUpdateEvents(self.specificGsheetId, item, self.driveClient, self.eventService, 
-                        self.currentFileStatus);
-                    check getCurrentStatusOfFile(self.driveClient, self.currentFileStatus, self.specificGsheetId);
-                } else {
-                    log:print("Whole drive watch response processing");
-                    check mapEvents(item, self.driveClient, self.eventService, self.currentFileStatus);
-                    check getCurrentStatusOfDrive(self.driveClient, self.currentFileStatus);
-                }
+            drive:ChangesListResponse item = check getAllChangeList(self.currentToken, self.driveClient);
+            // foreach drive:ChangesListResponse item in response {
+            self.currentToken = item?.newStartPageToken.toString();
+            if (self.isValidGsheet) {
+                log:print("File watch response processing");
+                events = check mapFileUpdateEvents(self.specificGsheetId, item, self.driveClient, 
+                    self.currentFileStatus);
+                check getCurrentStatusOfFile(self.driveClient, self.currentFileStatus, self.specificGsheetId);
+            } else {
+                log:print("Whole drive watch response processing");
+                events = check mapEvents(item, self.driveClient, self.currentFileStatus);
+                check getCurrentStatusOfDrive(self.driveClient, self.currentFileStatus);
             }
+            // }
             check caller->respond(http:STATUS_OK); 
         }
         log:print("<< CALLBACK RECEIVED >>");
+        return events;
     }
 
     # Finding the change event type triggered according to the incoming request.

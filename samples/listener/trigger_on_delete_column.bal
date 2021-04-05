@@ -19,15 +19,6 @@ import ballerina/log;
 import ballerinax/googleapis_drive as drive;
 import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
-# Event Trigger class
-public class EventTrigger {
-    public isolated function onNewSheetCreatedEvent(string fileId) {}
-
-    public isolated function onSheetDeletedEvent(string fileId) {}
-
-    public isolated function onFileUpdateEvent(string fileId) {}
-}
-
 
 configurable int port = ?;
 configurable string callbackURL = ?;
@@ -48,8 +39,7 @@ drive:Configuration clientConfiguration = {
 sheetsListener:SheetListenerConfiguration congifuration = {
     port: port,
     callbackURL: callbackURL,
-    driveClientConfiguration: clientConfiguration,
-    eventService: new EventTrigger()
+    driveClientConfiguration: clientConfiguration
 };
 
 listener sheetsListener:GoogleSheetEventListener gSheetListener = new (congifuration);

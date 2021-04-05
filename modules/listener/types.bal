@@ -27,7 +27,7 @@ public type SheetListenerConfiguration record {
     int port;
     string callbackURL;
     drive:Configuration driveClientConfiguration;
-    OnEventService eventService;
+    // OnEventService eventService;
     string? specificGsheetId = ();
 };
 

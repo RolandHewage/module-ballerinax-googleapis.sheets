@@ -14,33 +14,33 @@
 // specific language governing permissions and limitations
 // under the License.
 
-import ballerina/os;
+// import ballerina/os;
 import ballerina/test;
 import ballerina/log;
 
 // Local Testing Configuration from Config.toml
-// configurable string refreshToken = ?;
-// configurable string clientId = ?;
-// configurable string clientSecret = ?;
-// configurable string accessToken = ?;
-
-// SpreadsheetConfiguration spreadsheetConfig = {
-//     oauthClientConfig: {
-//         refreshUrl: REFRESH_URL,
-//         refreshToken: refreshToken,
-//         clientId: clientId,
-//         clientSecret: clientSecret
-//     }
-// };
+configurable string refreshToken = ?;
+configurable string clientId = ?;
+configurable string clientSecret = ?;
+configurable string accessToken = ?;
 
 SpreadsheetConfiguration spreadsheetConfig = {
     oauthClientConfig: {
         refreshUrl: REFRESH_URL,
-        refreshToken: os:getEnv("REFRESH_TOKEN"),
-        clientId: os:getEnv("CLIENT_ID"),
-        clientSecret: os:getEnv("CLIENT_SECRET")
+        refreshToken: refreshToken,
+        clientId: clientId,
+        clientSecret: clientSecret
     }
 };
+
+// SpreadsheetConfiguration spreadsheetConfig = {
+//     oauthClientConfig: {
+//         refreshUrl: REFRESH_URL,
+//         refreshToken: os:getEnv("REFRESH_TOKEN"),
+//         clientId: os:getEnv("CLIENT_ID"),
+//         clientSecret: os:getEnv("CLIENT_SECRET")
+//     }
+// };
 
 Client spreadsheetClient = checkpanic new (spreadsheetConfig);
 

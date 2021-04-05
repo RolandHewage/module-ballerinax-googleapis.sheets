@@ -19,17 +19,17 @@ import ballerina/log;
 import ballerinax/googleapis_drive as drive;
 import ballerinax/googleapis_sheets.'listener as sheetsListener;
 
-# Event Trigger class
-public class EventTrigger {
-    public isolated function onNewSheetCreatedEvent(string fileId) {
-        log:print("New File was created : " + fileId);
-        // Write your logic here.....
-    }
+// # Event Trigger class
+// public class EventTrigger {
+//     public isolated function onNewSheetCreatedEvent(string fileId) {
+//         log:print("New File was created : " + fileId);
+//         // Write your logic here.....
+//     }
 
-    public isolated function onSheetDeletedEvent(string fileId) {}
+//     public isolated function onSheetDeletedEvent(string fileId) {}
 
-    public isolated function onFileUpdateEvent(string fileId) {}
-}
+//     public isolated function onFileUpdateEvent(string fileId) {}
+// }
 
 configurable int port = ?;
 configurable string callbackURL = ?;
@@ -50,14 +50,19 @@ drive:Configuration clientConfiguration = {
 sheetsListener:SheetListenerConfiguration congifuration = {
     port: port,
     callbackURL: callbackURL,
-    driveClientConfiguration: clientConfiguration,
-    eventService: new EventTrigger()
+    driveClientConfiguration: clientConfiguration
 };
 
 listener sheetsListener:GoogleSheetEventListener gSheetListener = new (congifuration);
 
 service / on gSheetListener {
     resource function post onManage (http:Caller caller, http:Request request) returns error? {
-        check gSheetListener.findEventType(caller, request); 
+        sheetsListener:EventInfo[] eventInfoArray = check gSheetListener.findEventType(caller, request); 
+        foreach sheetsListener:EventInfo eventInfo in eventInfoArray {
+            if (eventInfo?.eventType == "onCreate") {
+                log:print("New File was created : ");
+                // Write your logic here.....
+            }
+        }
     }
 }

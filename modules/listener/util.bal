@@ -125,15 +125,16 @@ function getAllMetaData(drive:Client driveClient, drive:ListFilesOptional option
 # + pageToken - The token for continuing a previous list request on the next page. This should be set to the value of 
 #               'nextPageToken' from the previous response or to the response from the getStartPageToken method.
 # + return 'drive:ChangesListResponse[]' on success and error if unsuccessful.
-function getAllChangeList(string pageToken, drive:Client driveClient) returns drive:ChangesListResponse[]|error {
-    drive:ChangesListResponse[] changeList = [];
+function getAllChangeList(string pageToken, drive:Client driveClient) returns drive:ChangesListResponse|error {
+    // drive:ChangesListResponse[] changeList = [];
+    drive:ChangesListResponse response = {};
     string? token = pageToken;
-    while (token is string) {
-        drive:ChangesListResponse response = check driveClient->listChanges(pageToken);
-        changeList.push(response);
+    if (token is string) {
+        response = check driveClient->listChanges(pageToken);
+        // changeList.push(response);
         token = response?.nextPageToken;
     }
-    return changeList;
+    return response;
 }
 
 # Checks for a modified resource.
@@ -145,7 +146,8 @@ function getAllChangeList(string pageToken, drive:Client driveClient) returns dr
 # + eventService - 'OnEventService' object 
 # + return - If it is modified, returns boolean(true). Else error.
 function mapFileUpdateEvents(string resourceId, drive:ChangesListResponse changeList, drive:Client driveClient, 
-                             OnEventService eventService, json[] statusStore) returns error? {
+                             json[] statusStore) returns EventInfo[]|error {
+    EventInfo[] events = [];
     drive:Change[]? changes = changeList?.changes;
     if (changes is drive:Change[] && changes.length() > 0) {
         foreach drive:Change changeLog in changes {
@@ -158,11 +160,15 @@ function mapFileUpdateEvents(string resourceId, drive:ChangesListResponse change
                     boolean isModified = check checkforModificationAftertheLastOne(file?.modifiedTime.toString(), 
                     currentModifedTimeInStore.toString());
                     if (istrashed == true) {
-                        var x = eventService.onSheetDeletedEvent(fileId);
+                        EventInfo event = {eventType:FILE_DELETED, "fileId":fileId};
+                        events.push(event);
+                        // var x = eventService.onSheetDeletedEvent(fileId);
                     } else if (isModified) {
                         log:print("Sheet modification has been found");
                         //need to handle for spec from here var x = eventService.onFileUpdateEvent(fileOrFolderId);
-                        var x = eventService.onFileUpdateEvent(fileId);
+                        EventInfo event = {eventType:FILE_UPDATED, "fileId":fileId};
+                        events.push(event);
+                        // var x = eventService.onFileUpdateEvent(fileId);
                     }
                 } else {
                     fail error("Error In json modified time of current status");
@@ -170,6 +176,7 @@ function mapFileUpdateEvents(string resourceId, drive:ChangesListResponse change
             }
         }
     }
+    return events;
 }
 
 # Maps Events to Change records
@@ -177,8 +184,9 @@ function mapFileUpdateEvents(string resourceId, drive:ChangesListResponse change
 # + driveClient - Http client for client connection.
 # + eventService - 'OnEventService' record that represents all events.
 # + return if unsucessful, returns error. 
-function mapEvents(drive:ChangesListResponse changeList, drive:Client driveClient, OnEventService eventService, 
-                   json[] statusStore) returns error? {
+function mapEvents(drive:ChangesListResponse changeList, drive:Client driveClient, json[] statusStore) 
+                   returns EventInfo[]|error {
+    EventInfo[] events = [];
     drive:Change[]? changes = changeList?.changes;
     if (changes is drive:Change[] && changes.length() > 0) {
         foreach drive:Change changeLog in changes {
@@ -190,9 +198,14 @@ function mapEvents(drive:ChangesListResponse changeList, drive:Client driveClien
                     if (mimeType == SPREADSHEET) {
                         log:print("GSheet change event found in sheet id : " + fileOrFolderId);
                         if (changeLog?.removed == true) {
-                            eventService.onSheetDeletedEvent(fileOrFolderId);
+                            EventInfo event = {eventType:FILE_DELETED, "fileId":fileOrFolderId};
+                            events.push(event);
+                            // eventService.onSheetDeletedEvent(fileOrFolderId);
                         } else {
-                            check identifyFileEvent(fileOrFolderId, eventService, driveClient, statusStore);
+                            EventInfo? event = check identifyFileEvent(fileOrFolderId, driveClient, statusStore);
+                            if (event is EventInfo){
+                                events.push(event);
+                            }
                         }
                     } 
                 }
@@ -201,6 +214,7 @@ function mapEvents(drive:ChangesListResponse changeList, drive:Client driveClien
             }
         }
     }
+    return events;
 }
 
 # Checks for a modified resource.
@@ -230,8 +244,9 @@ isolated function checkforModificationAftertheLastOne(string eventTime, string l
 # + driveClient - Http client for client connection.
 # + eventService - 'OnEventService' record that represents all events.
 # + return if unsucessful, returns error. 
-function identifyFileEvent(string fileId, OnEventService eventService, drive:Client driveClient, json[] statusStore, 
-                           string? specFolderId = ()) returns error? {
+function identifyFileEvent(string fileId, drive:Client driveClient, json[] statusStore, 
+                           string? specFolderId = ()) returns EventInfo|error? {
+    EventInfo info = {};
     drive:File file = check driveClient->getFile(fileId, "createdTime,modifiedTime,trashed,parents");
     boolean isExisitingFile = check checkAvailability(fileId, statusStore);
     boolean? isTrashed = file?.trashed;
@@ -242,9 +257,13 @@ function identifyFileEvent(string fileId, OnEventService eventService, drive:Cli
     }
     if (isTrashed is boolean) {
         if (!isExisitingFile && !isTrashed) {
-            eventService.onNewSheetCreatedEvent(fileId);          
+            info.eventType = FILE_CREATED;
+            return info;
+            // eventService.onNewSheetCreatedEvent(fileId);          
         } else if (isExisitingFile && isTrashed) {
-            eventService.onSheetDeletedEvent(fileId);
+            info.eventType = FILE_DELETED;
+            return info;
+            // eventService.onSheetDeletedEvent(fileId);
         }
     } else {
         fail error("error in trash value");

@@ -58,3 +58,8 @@ const string TRIGGER_LOG = ">>>>> INCOMING TRIGGER >>>>> ";
 
 //Symbols
 const string EMPTY_STRING = "";
+
+// Manage Event Types
+public const string FILE_DELETED = "onDelete";
+public const string FILE_UPDATED = "onUpdate";
+public const string FILE_CREATED = "onCreate";
