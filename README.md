@@ -43,7 +43,7 @@ The Google Spreadsheet Ballerina Connector supports spreadsheet management opera
 Java Development Kit (JDK) with version 11 is required.
 
 * Download the Ballerina [distribution](https://ballerinalang.org/downloads/)
-Ballerina Swan Lake Alpha 3 is required.
+Ballerina Swan Lake Alpha 4 SNAPSHOT is required.
 
 * Instantiate the connector by giving authentication details in the HTTP client config. The HTTP client config has built-in support for Bearer Token Authentication and OAuth 2.0. Google Spreadsheet uses OAuth 2.0 to authenticate and authorize requests. It uses the Direct Token Grant Type. The Google Spreadsheet connector can be minimally instantiated in the HTTP client config using the OAuth 2.0 access token.
     * Access Token 
@@ -107,7 +107,7 @@ trustStorePassword = "enter a truststore password if required"
 |                                   | Version               |
 |:---------------------------------:|:---------------------:|
 | Google Sheets API Version         | V4                    |
-| Ballerina Language                | Swan Lake Alpha 3     |
+| Ballerina Language                | Swan Lake Alpha 4 SNAP|
 | Java Development Kit (JDK)        | 11                    |
 
 ## Limitations
@@ -1856,14 +1856,14 @@ public function main() {
 
 ### Building the Source
 
-Execute the commands below to build from the source after installing Ballerina SLAlpha2 version.
+Execute the commands below to build from the source after installing Ballerina SLAlpha4-SNAPSHOT version.
 
 1. To clone the repository:
 Clone this repository using the following command:
 ```shell
     git clone https://github.com/ballerina-platform/module-ballerinax-googleapis.sheets
 ```
-Execute the commands below to build from the source after installing Ballerina SLAlpha2 version.
+Execute the commands below to build from the source after installing Ballerina SLAlpha4-SNAPSHOT version.
 
 2. To build the library:
 Run this command from the module-ballerinax-googleapis.sheets root directory:
