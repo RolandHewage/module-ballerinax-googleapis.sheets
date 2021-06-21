@@ -207,58 +207,63 @@ public client class Client {
                 replies = <json[]>jsonResponseValues;
             }
             json|error addSheet = replies[0].addSheet;
-
-            Sheet sheet = {};
-            if (!(addSheet is error)) {
-                SheetProperties sheetProperties = {};
-                json|error sheetId = addSheet.properties.sheetId;
-                if (sheetId is json) {
-                    sheetProperties.sheetId = convertToInt(sheetId.toString());
-                }
-                json|error title = addSheet.properties.title;
-                if (title is json) {
-                    sheetProperties.title = title.toString();
-                }
-                json|error index = addSheet.properties.index;
-                if (index is json) {
-                    sheetProperties.index = convertToInt(index.toString());
-                }
-                json|error sheetType = addSheet.properties.sheetType;
-                if (sheetType is json) {
-                    sheetProperties.sheetType = sheetType.toString();
-                }
-                json|error hidden = addSheet.properties.hidden;
-                if (hidden is json) {
-                    sheetProperties.hidden = convertToBoolean(hidden.toString());
-                }
-                json|error rightToLeft = addSheet.properties.rightToLeft;
-                if (rightToLeft is json) {
-                    sheetProperties.rightToLeft = convertToBoolean(rightToLeft.toString());
-                }
-                sheetProperties.gridProperties = convertToGridProperties(check addSheet.properties.gridProperties);
-
-                sheet.properties = sheetProperties;
+            if (addSheet is json) {
+                return convertJSONToSheet(addSheet);
+            } else {
+                return addSheet;
             }
-            return sheet;
+
+            // Sheet sheet = {};
+            // if (!(addSheet is error)) {
+            //     SheetProperties sheetProperties = {};
+            //     json|error sheetId = addSheet.properties.sheetId;
+            //     if (sheetId is json) {
+            //         sheetProperties.sheetId = convertToInt(sheetId.toString());
+            //     }
+            //     json|error title = addSheet.properties.title;
+            //     if (title is json) {
+            //         sheetProperties.title = title.toString();
+            //     }
+            //     json|error index = addSheet.properties.index;
+            //     if (index is json) {
+            //         sheetProperties.index = convertToInt(index.toString());
+            //     }
+            //     json|error sheetType = addSheet.properties.sheetType;
+            //     if (sheetType is json) {
+            //         sheetProperties.sheetType = sheetType.toString();
+            //     }
+            //     json|error hidden = addSheet.properties.hidden;
+            //     if (hidden is json) {
+            //         sheetProperties.hidden = convertToBoolean(hidden.toString());
+            //     }
+            //     json|error rightToLeft = addSheet.properties.rightToLeft;
+            //     if (rightToLeft is json) {
+            //         sheetProperties.rightToLeft = convertToBoolean(rightToLeft.toString());
+            //     }
+            //     sheetProperties.gridProperties = convertToGridProperties(check addSheet.properties.gridProperties);
+
+            //     sheet.properties = sheetProperties;
+            // }
+            // return sheet;
         }
     }
 
-    # Delete specified worksheet by worksheet Id.
-    #
-    # + spreadsheetId - Id of the spreadsheet
-    # + sheetId - The Id of the worksheet to delete
-    # + return - Nil on success and error on failure
-    @display {label: "Remove Worksheet By Id"}
-    remote isolated function removeSheet(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                         @display {label: "Worksheet Id"} int sheetId) returns @tainted error? {
-        json payload = {"requests": [{"deleteSheet": {"sheetId": sheetId}}]};
-        string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
-        if (response is error) {
-            return response;
-        }
-        return;
-    }
+    // # Delete specified worksheet by worksheet Id.
+    // #
+    // # + spreadsheetId - Id of the spreadsheet
+    // # + sheetId - The Id of the worksheet to delete
+    // # + return - Nil on success and error on failure
+    // @display {label: "Remove Worksheet By Id"}
+    // remote isolated function removeSheet(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+    //                                      @display {label: "Worksheet Id"} int sheetId) returns @tainted error? {
+    //     json payload = {"requests": [{"deleteSheet": {"sheetId": sheetId}}]};
+    //     string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+    //     json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
+    //     if (response is error) {
+    //         return response;
+    //     }
+    //     return;
+    // }
 
     # Delete specified worksheet by worksheet name.
     #
@@ -417,41 +422,41 @@ public client class Client {
         }
     }
 
-    # Inserts the given number of columns before the given column position by worksheet Id.
-    #
-    # + spreadsheetId - Id of the spreadsheet
-    # + sheetId - Id of the worksheet
-    # + index - The position of the column before which the new columns should be added
-    # + numberOfColumns - Number of columns to be added
-    # + return - Nil on success, else returns an error
-    @display {label: "Add Columns Before By Sheet Id"}
-    remote isolated function addColumnsBefore(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                              @display {label: "Worksheet Id"} int sheetId, 
-                                              @display {label: "Column Position"} int index, 
-                                              @display {label: "Number of Columns"} int numberOfColumns) 
-                                              returns @tainted error? {
-        int startIndex = index - 1;
-        int endIndex = startIndex + numberOfColumns;
-        json payload = {
-            "requests": [
-                {
-                    "insertDimension": {
-                        "range": {
-                            "sheetId": sheetId,
-                            "dimension": "COLUMNS",
-                            "startIndex": startIndex,
-                            "endIndex": endIndex
-                        }
-                    }
-                }
-            ]
-        };
-        string addColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json|error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
-        if (response is error) {
-            return response;
-        }
-    }
+    // # Inserts the given number of columns before the given column position by worksheet Id.
+    // #
+    // # + spreadsheetId - Id of the spreadsheet
+    // # + sheetId - Id of the worksheet
+    // # + index - The position of the column before which the new columns should be added
+    // # + numberOfColumns - Number of columns to be added
+    // # + return - Nil on success, else returns an error
+    // @display {label: "Add Columns Before By Sheet Id"}
+    // remote isolated function addColumnsBefore(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+    //                                           @display {label: "Worksheet Id"} int sheetId, 
+    //                                           @display {label: "Column Position"} int index, 
+    //                                           @display {label: "Number of Columns"} int numberOfColumns) 
+    //                                           returns @tainted error? {
+    //     int startIndex = index - 1;
+    //     int endIndex = startIndex + numberOfColumns;
+    //     json payload = {
+    //         "requests": [
+    //             {
+    //                 "insertDimension": {
+    //                     "range": {
+    //                         "sheetId": sheetId,
+    //                         "dimension": "COLUMNS",
+    //                         "startIndex": startIndex,
+    //                         "endIndex": endIndex
+    //                     }
+    //                 }
+    //             }
+    //         ]
+    //     };
+    //     string addColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+    //     json|error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
+    //     if (response is error) {
+    //         return response;
+    //     }
+    // }
 
     # Inserts the given number of columns before the given column position by worksheet name.
     #
@@ -491,41 +496,41 @@ public client class Client {
         }
     }
 
-    # Inserts the given number of columns after the given column position by worksheet Id.
-    #
-    # + spreadsheetId - Id of the spreadsheet
-    # + sheetId - Id of the worksheet
-    # + index - The position of the column after which the new columns should be added
-    # + numberOfColumns - Number of columns to be added
-    # + return - Nil on success, else returns an error
-    @display {label: "Add Columns After By Sheet Id"}
-    remote isolated function addColumnsAfter(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                             @display {label: "Worksheet Id"} int sheetId, 
-                                             @display {label: "Column Position"} int index, 
-                                             @display {label: "Number of Columns"} int numberOfColumns) 
-                                             returns @tainted error? {
-        int startIndex = index;
-        int endIndex = startIndex + numberOfColumns;
-        json payload = {
-            "requests": [
-                {
-                    "insertDimension": {
-                        "range": {
-                            "sheetId": sheetId,
-                            "dimension": "COLUMNS",
-                            "startIndex": startIndex,
-                            "endIndex": endIndex
-                        }
-                    }
-                }
-            ]
-        };
-        string addColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json|error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
-        if (response is error) {
-            return response;
-        }
-    }
+    // # Inserts the given number of columns after the given column position by worksheet Id.
+    // #
+    // # + spreadsheetId - Id of the spreadsheet
+    // # + sheetId - Id of the worksheet
+    // # + index - The position of the column after which the new columns should be added
+    // # + numberOfColumns - Number of columns to be added
+    // # + return - Nil on success, else returns an error
+    // @display {label: "Add Columns After By Sheet Id"}
+    // remote isolated function addColumnsAfter(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+    //                                          @display {label: "Worksheet Id"} int sheetId, 
+    //                                          @display {label: "Column Position"} int index, 
+    //                                          @display {label: "Number of Columns"} int numberOfColumns) 
+    //                                          returns @tainted error? {
+    //     int startIndex = index;
+    //     int endIndex = startIndex + numberOfColumns;
+    //     json payload = {
+    //         "requests": [
+    //             {
+    //                 "insertDimension": {
+    //                     "range": {
+    //                         "sheetId": sheetId,
+    //                         "dimension": "COLUMNS",
+    //                         "startIndex": startIndex,
+    //                         "endIndex": endIndex
+    //                     }
+    //                 }
+    //             }
+    //         ]
+    //     };
+    //     string addColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+    //     json|error response = sendRequestWithPayload(self.httpClient, addColumnsPath, payload);
+    //     if (response is error) {
+    //         return response;
+    //     }
+    // }
 
     # Inserts the given number of columns after the given column position by worksheet name.
     #
@@ -654,41 +659,41 @@ public client class Client {
         }
     }
 
-    # Deletes the given number of columns starting at the given column position by worksheet Id.
-    #
-    # + spreadsheetId - Id of the spreadsheet
-    # + sheetId - Id of the worksheet
-    # + column - Starting position of the columns
-    # + numberOfColumns - Number of columns from the starting position
-    # + return - Nil on success, else returns an error
-    @display {label: "Delete Columns By Sheet Id"}
-    remote isolated function deleteColumns(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                           @display {label: "Worksheet Id"} int sheetId, 
-                                           @display {label: "Starting Column Position"} int column, 
-                                           @display {label: "Number of Columns"} int numberOfColumns) 
-                                           returns @tainted error? {
-        int startIndex = column - 1;
-        int endIndex = startIndex + numberOfColumns;
-        json payload = {
-            "requests": [
-                {
-                    "deleteDimension": {
-                        "range": {
-                            "sheetId": sheetId,
-                            "dimension": "COLUMNS",
-                            "startIndex": startIndex,
-                            "endIndex": endIndex
-                        }
-                    }
-                }
-            ]
-        };
-        string deleteColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json|error response = sendRequestWithPayload(self.httpClient, deleteColumnsPath, payload);
-        if (response is error) {
-            return response;
-        }
-    }
+    // # Deletes the given number of columns starting at the given column position by worksheet Id.
+    // #
+    // # + spreadsheetId - Id of the spreadsheet
+    // # + sheetId - Id of the worksheet
+    // # + column - Starting position of the columns
+    // # + numberOfColumns - Number of columns from the starting position
+    // # + return - Nil on success, else returns an error
+    // @display {label: "Delete Columns By Sheet Id"}
+    // remote isolated function deleteColumns(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+    //                                        @display {label: "Worksheet Id"} int sheetId, 
+    //                                        @display {label: "Starting Column Position"} int column, 
+    //                                        @display {label: "Number of Columns"} int numberOfColumns) 
+    //                                        returns @tainted error? {
+    //     int startIndex = column - 1;
+    //     int endIndex = startIndex + numberOfColumns;
+    //     json payload = {
+    //         "requests": [
+    //             {
+    //                 "deleteDimension": {
+    //                     "range": {
+    //                         "sheetId": sheetId,
+    //                         "dimension": "COLUMNS",
+    //                         "startIndex": startIndex,
+    //                         "endIndex": endIndex
+    //                     }
+    //                 }
+    //             }
+    //         ]
+    //     };
+    //     string deleteColumnsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+    //     json|error response = sendRequestWithPayload(self.httpClient, deleteColumnsPath, payload);
+    //     if (response is error) {
+    //         return response;
+    //     }
+    // }
 
     # Deletes the given number of columns starting at the given column position by worksheet name.
     #
@@ -728,41 +733,41 @@ public client class Client {
         }
     }
 
-    # Inserts the given number of rows before the given row position by worksheet Id.
-    #
-    # + spreadsheetId - Id of the spreadsheet
-    # + sheetId - Id of the worksheet
-    # + index - The position of the row before which the new rows should be added
-    # + numberOfRows - The number of rows to be added
-    # + return - Nil on success, else returns an error
-    @display {label: "Add Rows Before By Sheet Id"}
-    remote isolated function addRowsBefore(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                           @display {label: "Worksheet Id"} int sheetId, 
-                                           @display {label: "Row Position"} int index, 
-                                           @display {label: "Number of Rows"} int numberOfRows) 
-                                           returns @tainted error? {
-        int startIndex = index - 1;
-        int endIndex = startIndex + numberOfRows;
-        json payload = {
-            "requests": [
-                {
-                    "insertDimension": {
-                        "range": {
-                            "sheetId": sheetId,
-                            "dimension": "ROWS",
-                            "startIndex": startIndex,
-                            "endIndex": endIndex
-                        }
-                    }
-                }
-            ]
-        };
-        string addRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json|error response = sendRequestWithPayload(self.httpClient, addRowsPath, payload);
-        if (response is error) {
-            return response;
-        }
-    }
+    // # Inserts the given number of rows before the given row position by worksheet Id.
+    // #
+    // # + spreadsheetId - Id of the spreadsheet
+    // # + sheetId - Id of the worksheet
+    // # + index - The position of the row before which the new rows should be added
+    // # + numberOfRows - The number of rows to be added
+    // # + return - Nil on success, else returns an error
+    // @display {label: "Add Rows Before By Sheet Id"}
+    // remote isolated function addRowsBefore(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+    //                                        @display {label: "Worksheet Id"} int sheetId, 
+    //                                        @display {label: "Row Position"} int index, 
+    //                                        @display {label: "Number of Rows"} int numberOfRows) 
+    //                                        returns @tainted error? {
+    //     int startIndex = index - 1;
+    //     int endIndex = startIndex + numberOfRows;
+    //     json payload = {
+    //         "requests": [
+    //             {
+    //                 "insertDimension": {
+    //                     "range": {
+    //                         "sheetId": sheetId,
+    //                         "dimension": "ROWS",
+    //                         "startIndex": startIndex,
+    //                         "endIndex": endIndex
+    //                     }
+    //                 }
+    //             }
+    //         ]
+    //     };
+    //     string addRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+    //     json|error response = sendRequestWithPayload(self.httpClient, addRowsPath, payload);
+    //     if (response is error) {
+    //         return response;
+    //     }
+    // }
 
     # Inserts the given number of rows before the given row position by worksheet name.
     #
@@ -801,41 +806,41 @@ public client class Client {
         }
     }
 
-    # Inserts a number of rows after the given row position by worksheet Id.
-    #
-    # + spreadsheetId - Id of the spreadsheet
-    # + sheetId - Id of the worksheet
-    # + index - The row after which the new rows should be added.
-    # + numberOfRows - The number of rows to be added
-    # + return - Nil on success, else returns an error
-    @display {label: "Add Rows After By Sheet Id"}
-    remote isolated function addRowsAfter(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                          @display {label: "Worksheet Id"} int sheetId, 
-                                          @display {label: "Row Position"} int index, 
-                                          @display {label: "Number of Rows"} int numberOfRows) 
-                                          returns @tainted error? {
-        int startIndex = index;
-        int endIndex = startIndex + numberOfRows;
-        json payload = {
-            "requests": [
-                {
-                    "insertDimension": {
-                        "range": {
-                            "sheetId": sheetId,
-                            "dimension": "ROWS",
-                            "startIndex": startIndex,
-                            "endIndex": endIndex
-                        }
-                    }
-                }
-            ]
-        };
-        string addRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json|error response = sendRequestWithPayload(self.httpClient, addRowsPath, payload);
-        if (response is error) {
-            return response;
-        }
-    }
+    // # Inserts a number of rows after the given row position by worksheet Id.
+    // #
+    // # + spreadsheetId - Id of the spreadsheet
+    // # + sheetId - Id of the worksheet
+    // # + index - The row after which the new rows should be added.
+    // # + numberOfRows - The number of rows to be added
+    // # + return - Nil on success, else returns an error
+    // @display {label: "Add Rows After By Sheet Id"}
+    // remote isolated function addRowsAfter(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+    //                                       @display {label: "Worksheet Id"} int sheetId, 
+    //                                       @display {label: "Row Position"} int index, 
+    //                                       @display {label: "Number of Rows"} int numberOfRows) 
+    //                                       returns @tainted error? {
+    //     int startIndex = index;
+    //     int endIndex = startIndex + numberOfRows;
+    //     json payload = {
+    //         "requests": [
+    //             {
+    //                 "insertDimension": {
+    //                     "range": {
+    //                         "sheetId": sheetId,
+    //                         "dimension": "ROWS",
+    //                         "startIndex": startIndex,
+    //                         "endIndex": endIndex
+    //                     }
+    //                 }
+    //             }
+    //         ]
+    //     };
+    //     string addRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+    //     json|error response = sendRequestWithPayload(self.httpClient, addRowsPath, payload);
+    //     if (response is error) {
+    //         return response;
+    //     }
+    // }
 
     # Inserts a number of rows after the given row position by worksheet name.
     #
@@ -959,41 +964,41 @@ public client class Client {
         }
     }
 
-    # Deletes the given number of rows starting at the given row position by worksheet Id.
-    #
-    # + spreadsheetId - Id of the spreadsheet
-    # + sheetId - Id of the worksheet
-    # + row - Starting position of the rows
-    # + numberOfRows - Number of rows from the starting position
-    # + return - Nil on success, else returns an error
-    @display {label: "Delete Rows By Sheet Id"}
-    remote isolated function deleteRows(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                        @display {label: "Worksheet Id"} int sheetId, 
-                                        @display {label: "Starting Row Position"} int row, 
-                                        @display {label: "Number of Rows"} int numberOfRows) 
-                                        returns @tainted error? {
-        int startIndex = row - 1;
-        int endIndex = startIndex + numberOfRows;
-        json payload = {
-            "requests": [
-                {
-                    "deleteDimension": {
-                        "range": {
-                            "sheetId": sheetId,
-                            "dimension": "ROWS",
-                            "startIndex": startIndex,
-                            "endIndex": endIndex
-                        }
-                    }
-                }
-            ]
-        };
-        string deleteRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json|error response = sendRequestWithPayload(self.httpClient, deleteRowsPath, payload);
-        if (response is error) {
-            return response;
-        }
-    }
+    // # Deletes the given number of rows starting at the given row position by worksheet Id.
+    // #
+    // # + spreadsheetId - Id of the spreadsheet
+    // # + sheetId - Id of the worksheet
+    // # + row - Starting position of the rows
+    // # + numberOfRows - Number of rows from the starting position
+    // # + return - Nil on success, else returns an error
+    // @display {label: "Delete Rows By Sheet Id"}
+    // remote isolated function deleteRows(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+    //                                     @display {label: "Worksheet Id"} int sheetId, 
+    //                                     @display {label: "Starting Row Position"} int row, 
+    //                                     @display {label: "Number of Rows"} int numberOfRows) 
+    //                                     returns @tainted error? {
+    //     int startIndex = row - 1;
+    //     int endIndex = startIndex + numberOfRows;
+    //     json payload = {
+    //         "requests": [
+    //             {
+    //                 "deleteDimension": {
+    //                     "range": {
+    //                         "sheetId": sheetId,
+    //                         "dimension": "ROWS",
+    //                         "startIndex": startIndex,
+    //                         "endIndex": endIndex
+    //                     }
+    //                 }
+    //             }
+    //         ]
+    //     };
+    //     string deleteRowsPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+    //     json|error response = sendRequestWithPayload(self.httpClient, deleteRowsPath, payload);
+    //     if (response is error) {
+    //         return response;
+    //     }
+    // }
 
     # Deletes the given number of rows starting at the given row position by worksheet name.
     #
@@ -1164,26 +1169,26 @@ public client class Client {
         }
     }
 
-    # Copies the sheet to a given spreadsheet by worksheet Id.
-    #
-    # + spreadsheetId - Id of the spreadsheet
-    # + sheetId - Id of the worksheet
-    # + destinationId - Id of the spreadsheet to copy the sheet to
-    # + return - Nil on success, else returns an error
-    @display {label: "Copy Sheet By Sheet Id"}
-    remote isolated function copyTo(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                    @display {label: "Worksheet Id"} int sheetId, 
-                                    @display {label: "Destination Spreadsheet Id"} string destinationId) 
-                                    returns @tainted error? {
-        string notation = sheetId.toString();
-        string copyToPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + SHEETS_PATH + notation +
-            COPY_TO_REQUEST;
-        json payload = {"destinationSpreadsheetId": destinationId};
-        json|error response = sendRequestWithPayload(self.httpClient, copyToPath, payload);
-        if (response is error) {
-            return response;
-        }
-    }
+    // # Copies the sheet to a given spreadsheet by worksheet Id.
+    // #
+    // # + spreadsheetId - Id of the spreadsheet
+    // # + sheetId - Id of the worksheet
+    // # + destinationId - Id of the spreadsheet to copy the sheet to
+    // # + return - Nil on success, else returns an error
+    // @display {label: "Copy Sheet By Sheet Id"}
+    // remote isolated function copyTo(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+    //                                 @display {label: "Worksheet Id"} int sheetId, 
+    //                                 @display {label: "Destination Spreadsheet Id"} string destinationId) 
+    //                                 returns @tainted error? {
+    //     string notation = sheetId.toString();
+    //     string copyToPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + SHEETS_PATH + notation +
+    //         COPY_TO_REQUEST;
+    //     json payload = {"destinationSpreadsheetId": destinationId};
+    //     json|error response = sendRequestWithPayload(self.httpClient, copyToPath, payload);
+    //     if (response is error) {
+    //         return response;
+    //     }
+    // }
 
     # Copies the sheet to a given spreadsheet by worksheet name.
     #
@@ -1208,32 +1213,32 @@ public client class Client {
         }
     }
 
-    # Clears the worksheet content and formatting rules by worksheet Id.
-    #
-    # + spreadsheetId - Id of the spreadsheet
-    # + sheetId - Id of the worksheet
-    # + return - Nil on success, else returns an error
-    @display {label: "Clear All By Sheet Id"}
-    remote isolated function clearAll(@display {label: "Spreadsheet Id"} string spreadsheetId, 
-                                      @display {label: "Worksheet Id"} int sheetId) returns @tainted error? {
-        json payload = {
-            "requests": [
-                {
-                    "updateCells": {
-                        "range": {
-                            "sheetId": sheetId
-                        },
-                        "fields": "*"
-                    }
-                }
-            ]
-        };
-        string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
-        json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
-        if (response is error) {
-            return response;
-        }
-    }
+    // # Clears the worksheet content and formatting rules by worksheet Id.
+    // #
+    // # + spreadsheetId - Id of the spreadsheet
+    // # + sheetId - Id of the worksheet
+    // # + return - Nil on success, else returns an error
+    // @display {label: "Clear All By Sheet Id"}
+    // remote isolated function clearAll(@display {label: "Spreadsheet Id"} string spreadsheetId, 
+    //                                   @display {label: "Worksheet Id"} int sheetId) returns @tainted error? {
+    //     json payload = {
+    //         "requests": [
+    //             {
+    //                 "updateCells": {
+    //                     "range": {
+    //                         "sheetId": sheetId
+    //                     },
+    //                     "fields": "*"
+    //                 }
+    //             }
+    //         ]
+    //     };
+    //     string deleteSheetPath = SPREADSHEET_PATH + PATH_SEPARATOR + spreadsheetId + BATCH_UPDATE_REQUEST;
+    //     json|error response = sendRequestWithPayload(self.httpClient, deleteSheetPath, payload);
+    //     if (response is error) {
+    //         return response;
+    //     }
+    // }
 
     # Clears the worksheet content and formatting rules by worksheet name.
     #
